@@ -9,6 +9,9 @@ dotenv.config({
 app.listen(8000, () => {
   console.log("Server is running at port : 8000");
 });
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
 connectDB().catch((error) => {
   console.error("MONGO DB connection FAILED !! ", error);
