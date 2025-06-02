@@ -1,17 +1,16 @@
 import mongoose, { Schema } from "mongoose";
-import { User } from "./user.model.js";
 
-const fileSchema = mongoose.Schema(
+const fileSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: User,
+      ref: "User", // string model name
       required: true,
     },
     name: {
       type: String,
       required: true,
-      unique: true,
+      // no unique here; uniqueness enforced by compound index below
     },
     extension: {
       type: String,
@@ -21,23 +20,19 @@ const fileSchema = mongoose.Schema(
       type: String,
       default: "",
     },
-    language:{
+    language: {
       type: String,
       required: true,
       default: "javascript",
-      enum:[
-        "javascript",
-        "python",
-        "cpp",
-        "go",
-        "java",	
-        "rust",	
-      ]
-    }
+      enum: ["javascript", "python", "cpp", "go", "java", "rust"],
+    },
   },
   {
-    Timestamp: true,
+    timestamps: true, // correct option name
   }
 );
+
+// Compound unique index to ensure no duplicate file names per user
+fileSchema.index({ user: 1, name: 1 }, { unique: true });
 
 export const File = mongoose.model("File", fileSchema);
